@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/Request")
 public class Request extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private Connection conn;
 	private String content;
        
     /**
@@ -41,13 +42,15 @@ public class Request extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try {
 		content = "";
 		response.setContentType("text/html");
 		String stuId = "", type = "";
-		if (request.getParameter("studentID") != null) {
+		if (request.getParameter("studentID") != "") {
 			stuId = request.getParameter("studentID");
 		}
-		if (request.getParameter("type") != null) {
+		
+		if (request.getParameter("type") != "") {
 			type = request.getParameter("type");
 		}
 		
@@ -68,6 +71,9 @@ public class Request extends HttpServlet {
 		}
 		request.setAttribute("content", content);
 		getServletContext().getRequestDispatcher("/RequestOutput.jsp").forward(request, response);
+		} catch (NullPointerException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
 	private String getSelectedTable(String stuId, String type) {
@@ -75,34 +81,38 @@ public class Request extends HttpServlet {
 		Connection conn = connectDB();
 
 		String sql = "";
-		if ((stuId.isEmpty() == true) && (type.isEmpty() == true)) {
+		if ((stuId.isEmpty() == true) && (type.equals("Select Type"))) {
 			sql = "SELECT * FROM grades";
-		} else if ((stuId.isEmpty() == false) && (type.isEmpty() == true)) {
+		} else if ((stuId.isEmpty() == false) && (type.equals("Select Type"))) {
 			sql = "SELECT * FROM grades WHERE stu_id = '" + stuId + "'";
-		} else if ((stuId.isEmpty() == true) && (type.isEmpty() == false)) {
+		} else if ((stuId.isEmpty() == true) && (!type.equals("Select Type"))) {
 			sql = "SELECT * FROM grades WHERE type = '" + type + "'";
 		} else {
 			sql = "SELECT * FROM grades WHERE stu_id = '" + stuId + "' AND type = '" + type + "'";
 		}
 
-		// creating PreparedStatement object to execute query
-		PreparedStatement preStatement = conn.prepareStatement(sql);
-		ResultSet result = preStatement.executeQuery();
-
-		while (result.next()) {
-			content += "<tr><td>"
-					+ Integer.parseInt(result.getString("id"))
-					+ "</td><td>" 
-					+ result.getString("stu_id")
-					+ "</td><td>"
-					+ result.getString("assignment")
-					+ "</td><td>"
-					+ result.getString("type")
-					+ "</td><td>"
-					+ result.getString("assi_date").substring(0, 10)
-					+ "</td><td>"
-					+ Double.parseDouble(result.getString("grade"))
-					+ "</td></tr>";
+		try {
+			// creating PreparedStatement object to execute query
+			PreparedStatement preStatement = conn.prepareStatement(sql);
+			ResultSet result = preStatement.executeQuery();
+	
+			while (result.next()) {
+				content += "<tr><td>"
+						+ Integer.parseInt(result.getString("id"))
+						+ "</td><td>" 
+						+ result.getString("stu_id")
+						+ "</td><td>"
+						+ result.getString("assignment")
+						+ "</td><td>"
+						+ result.getString("type")
+						+ "</td><td>"
+						+ result.getString("assi_date").substring(0, 10)
+						+ "</td><td>"
+						+ Double.parseDouble(result.getString("grade"))
+						+ "</td></tr>";
+			}
+		} catch (SQLException e) {
+			e.getMessage();
 		}
 		return content;
 	}
@@ -112,38 +122,42 @@ public class Request extends HttpServlet {
 		Connection conn = connectDB();
 
 		String sql = "";
-		if ((stuId.isEmpty() == true) && (type.isEmpty() == true)) {
+		if ((stuId.isEmpty() == true) && (type.equals("Select Type"))) {
 			sql = "SELECT AVG(grade) FROM grades";
-		} else if ((stuId.isEmpty() == false) && (type.isEmpty() == true)) {
+		} else if ((stuId.isEmpty() == false) && (type.equals("Select Type"))) {
 			sql = "SELECT AVG(grade) FROM grades WHERE stu_id = '" + stuId + "'";
-		} else if ((stuId.isEmpty() == true) && (type.isEmpty() == false)) {
+		} else if ((stuId.isEmpty() == true) && (!type.equals("Select Type"))) {
 			sql = "SELECT AVG(grade) FROM grades WHERE type = '" + type + "'";
 		} else {
 			sql = "SELECT AVG(grade) FROM grades WHERE stu_id = '" + stuId + "' AND type = '" + type + "'";
 		}
 
-		// creating PreparedStatement object to execute query
-		PreparedStatement preStatement = conn.prepareStatement(sql);
-		ResultSet result = preStatement.executeQuery();
-		
-		while (result.next()) {
-			content += result.getString(1);
+		try {
+			// creating PreparedStatement object to execute query
+			PreparedStatement preStatement = conn.prepareStatement(sql);
+			ResultSet result = preStatement.executeQuery();
+			
+			while (result.next()) {
+				content += result.getString(1);
+			}
+		} catch (SQLException e) {
+			e.getMessage();
 		}
 		return content;
 	}
 	
-	private String[] getMaxMin() {
+	private String[] getMaxMin(String stuId, String type) {
 		String[] content = new String[2];
 		Connection conn = connectDB();
 		
 		String sql1 = "", sql2 = "";
-		if ((stuId.isEmpty() == true) && (type.isEmpty() == true)) {
+		if ((stuId.isEmpty() == true) && (type.equals("Select Type"))) {
 			sql1 = "SELECT MAX(grade) FROM grades";
 			sql2 = "SELECT MIN(grade) FROM grades";
-		} else if ((stuId.isEmpty() == false) && (type.isEmpty() == true)) {
+		} else if ((stuId.isEmpty() == false) && (type.equals("Select Type"))) {
 			sql1 = "SELECT MAX(grade) FROM grades WHERE stu_id = '" + stuId + "'";
 			sql2 = "SELECT MIN(grade) FROM grades WHERE stu_id = '" + stuId + "'";
-		} else if ((stuId.isEmpty() == true) && (type.isEmpty() == false)) {
+		} else if ((stuId.isEmpty() == true) && (!type.equals("Select Type"))) {
 			sql1 = "SELECT MAX(grade) FROM grades WHERE type = '" + type + "'";
 			sql2 = "SELECT MIN(grade) FROM grades WHERE type = '" + type + "'";
 		} else {
@@ -151,20 +165,24 @@ public class Request extends HttpServlet {
 			sql2 = "SELECT MIN(grade) FROM grades WHERE stu_id = '" + stuId + "' AND type = '" + type + "'";
 		}
 
-		// creating PreparedStatement object to execute query
-		PreparedStatement preStatement1 = conn.prepareStatement(sql1);
-		PreparedStatement preStatement2 = conn.prepareStatement(sql2);
-		ResultSet result1 = preStatement1.executeQuery();
-		ResultSet result2 = preStatement2.executeQuery();
-		
-		while (result1.next() && result2.next()) {
-			content[0] += result1.getString(1);
-			content[1] += result2.getString(1);
+		try {
+			// creating PreparedStatement object to execute query
+			PreparedStatement preStatement1 = conn.prepareStatement(sql1);
+			PreparedStatement preStatement2 = conn.prepareStatement(sql2);
+			ResultSet result1 = preStatement1.executeQuery();
+			ResultSet result2 = preStatement2.executeQuery();
+			
+			while (result1.next() && result2.next()) {
+				content[0] = result1.getString(1);
+				content[1] = result2.getString(1);
+			}
+		} catch (SQLException e) {
+			e.getMessage();
 		}
 		return content;
 	}
 
-	private static Connection connectDB() {
+	private Connection connectDB() {
 		try {
 			// URL of Oracle database server
 			String url = "jdbc:oracle:thin:testuser/password@localhost";
@@ -176,7 +194,7 @@ public class Request extends HttpServlet {
 
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			// creating connection to Oracle database using JDBC
-			Connection conn = DriverManager.getConnection(url, props);
+			conn = DriverManager.getConnection(url, props);
 		} catch (SQLException e) {
 			e.getMessage();
 		} catch (ClassNotFoundException e) {

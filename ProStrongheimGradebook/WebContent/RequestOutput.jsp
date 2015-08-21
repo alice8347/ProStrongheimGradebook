@@ -20,7 +20,6 @@
 <div>
 <ul class="nav navbar-nav">
 <li><a href="Input">Input Form</a></li>
-<li><a href="Output">Grade Book</a></li>
 <li class="active"><a href="Request">Search</a>
 </ul>
 </div>
@@ -28,7 +27,8 @@
 </nav>
 
 <div class="container">
-<h3>All assignments</h3>
+<h3>Input filters or leave them blank to get all records: </h3>
+<br />
 <form class="form-inline" role="form" action="Request" method="post">
 <div class="form-group">
 <label for="studentID">Student ID:</label>
@@ -53,7 +53,7 @@
 </div>
 </form>
 </div>
-
+<br />
 <div class="container">
 ${content}
 </div>
