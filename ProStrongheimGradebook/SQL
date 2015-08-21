@@ -1,0 +1,20 @@
+CREATE TABLE grades (
+    id INTEGER PRIMARY KEY, 
+    class_id VARCHAR(20), 
+    stu_id VARCHAR(20), 
+    assignment VARCHAR(50), 
+    type VARCHAR(20), 
+    assi_date DATE, 
+    grade NUMBER(10, 2)
+);
+
+CREATE TABLE weights (
+    id INTEGER PRIMARY KEY, 
+    type VARCHAR(20), 
+    weight NUMBER(10, 4)
+);
+
+INSERT INTO weights VALUES (1, 'Homework', 0.2);
+INSERT INTO weights VALUES (2, 'Quiz', 0.1);
+INSERT INTO weights VALUES (3, 'Test', 0.2);
+INSERT INTO weights VALUES (4, 'Project', 0.5);
