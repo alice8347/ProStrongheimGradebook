@@ -27,24 +27,32 @@
 </nav>
 
 <div class="container">
+<h3>Student record</h3>
 <br />
-<form class="form-horizontal" role="form" action="Input" method="post">
+<form class="form-horizontal" name="recordInput" id="recordInput" role="form" action="Input" method="post">
 <div class="form-group">
-<label class="control-label col-sm-2" for="studentID">Student ID:</label>
+<label class="control-label col-sm-2" for="classID">Class ID: </label>
+<div class="col-sm-10">
+<input type="text" class="form-control" name="classID" id="classID" placeholder="Enter class ID">
+</div>
+</div>
+
+<div class="form-group">
+<label class="control-label col-sm-2" for="studentID">Student ID: </label>
 <div class="col-sm-10">
 <input type="text" class="form-control" name="studentID" id="studentID" placeholder="Enter student ID">
 </div>
 </div>
 
 <div class="form-group">
-<label class="control-label col-sm-2" for="assignment">Assignment Name:</label>
+<label class="control-label col-sm-2" for="assignment">Assignment Name: </label>
 <div class="col-sm-10">
 <input type="text" class="form-control" name="assignment" id="assignment" placeholder="Enter assignment name">
 </div>
 </div>
 
 <div class="form-group">
-<label class="control-label col-sm-2" for="type">Type:</label>
+<label class="control-label col-sm-2" for="type">Type: </label>
 <div class="col-sm-10">
 <select class="form-control" name="type" id="type">
 <option data-hidden="true">Select Type</option>
@@ -57,14 +65,14 @@
 </div>
 
 <div class="form-group">
-<label class="control-label col-sm-2" for="date">Date (YYYY-MM-DD):</label>
+<label class="control-label col-sm-2" for="date">Date (YYYY-MM-DD): </label>
 <div class="col-sm-10">
 <input type="text" class="form-control" name="date" id="date" placeholder="Enter date">
 </div>
 </div>
 
 <div class="form-group">
-<label class="control-label col-sm-2" for="grade">Grade (0-100):</label>
+<label class="control-label col-sm-2" for="grade">Grade (0-100): </label>
 <div class="col-sm-10">
 <input type="text" class="form-control" name="grade" id="grade" placeholder="Enter grade">
 </div>
@@ -72,7 +80,7 @@
 
 <div class="form-group"> 
 <div class="col-sm-offset-2 col-sm-10">
-<button type="submit" class="btn btn-default">Submit</button>
+<button type="submit" class="btn btn-default" name="record" id="record">Submit</button>
 </div>
 </div>
 </form>
